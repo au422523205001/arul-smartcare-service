@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arul SmartCare Service | AC · Washing Machine · Refrigerator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0A1628;
+      --navy2:   #0F2044;
+      --blue:    #1E4FD8;
+      --blue2:   #2563EB;
+      --sky:     #38BDF8;
+      --gold:    #F59E0B;
+      --gold2:   #FCD34D;
+      --white:   #FFFFFF;
+      --offwhite:#F8FAFF;
+      --muted:   #94A3B8;
+      --border:  rgba(255,255,255,.1);
+      --card:    rgba(255,255,255,.04);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 5%;
+      background: rgba(10,22,40,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .75rem;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(30,79,216,.4);
+    }
+    .logo-text { line-height: 1.1; }
+    .logo-name {
+      font-size: .95rem; font-weight: 800;
+      color: var(--white); letter-spacing: -.3px;
+    }
+    .logo-sub { font-size: .68rem; color: var(--sky); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+
+    /* Nav right side */
+    .nav-right { display: flex; align-items: center; gap: .75rem; }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: var(--navy); font-weight: 800; font-size: .82rem;
+      padding: .55rem 1.2rem; border-radius: 8px;
+      text-decoration: none; transition: all .2s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,.4); }
+
+    /* Hamburger */
+    .hamburger {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--card); border: 1px solid var(--border);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 5px; cursor: pointer; transition: all .2s; flex-shrink: 0;
+    }
+    .hamburger:hover { border-color: var(--sky); }
+    .hamburger span {
+      display: block; width: 20px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: all .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Dropdown menu */
+    .nav-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 5%;
+      background: rgba(10,22,40,.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: .6rem;
+      min-width: 220px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 24px 60px rgba(0,0,0,.5);
+      animation: dropIn .2s ease;
+    }
+    @keyframes dropIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    .nav-dropdown.open { display: flex; }
+    .drop-item {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1rem; border-radius: 10px;
+      color: var(--white); text-decoration: none;
+      font-size: .9rem; font-weight: 600;
+      transition: all .15s;
+    }
+    .drop-item:hover { background: rgba(56,189,248,.08); color: var(--sky); }
+    .drop-item .drop-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, rgba(30,79,216,.3), rgba(56,189,248,.15));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .drop-divider { height: 1px; background: var(--border); margin: .4rem 0; }
+    .drop-call {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1rem; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(30,79,216,.2), rgba(56,189,248,.1));
+      border: 1px solid rgba(56,189,248,.2);
+      color: var(--sky); text-decoration: none;
+      font-size: .88rem; font-weight: 700;
+      margin-top: .2rem; transition: all .15s;
+    }
+    .drop-call:hover { background: linear-gradient(135deg, rgba(30,79,216,.35), rgba(56,189,248,.2)); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 5% 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(30,79,216,.25), transparent),
+        radial-gradient(ellipse 50% 40% at 20% 80%, rgba(56,189,248,.1), transparent),
+        radial-gradient(ellipse 40% 40% at 80% 70%, rgba(245,158,11,.06), transparent);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: .04;
+      background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(30,79,216,.2); border: 1px solid rgba(30,79,216,.4);
+      color: var(--sky); font-size: .75rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: .4rem 1rem; border-radius: 20px;
+      margin-bottom: 1.8rem;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 8px #22C55E; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 8vw, 4.5rem);
+      font-weight: 800; line-height: 1.08;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 .gold {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(.95rem, 2vw, 1.15rem);
+      color: var(--muted); max-width: 540px; line-height: 1.8;
+      margin: 0 auto 1rem;
+    }
+    .hero-location {
+      display: inline-flex; align-items: center; gap: .4rem;
+      color: var(--sky); font-size: .88rem; font-weight: 600;
+      margin-bottom: 2.5rem;
+    }
+    .hero-services-row {
+      display: flex; flex-wrap: wrap; gap: .6rem;
+      justify-content: center; margin-bottom: 2.5rem;
+    }
+    .service-pill {
+      display: flex; align-items: center; gap: .4rem;
+      background: rgba(255,255,255,.06); border: 1px solid var(--border);
+      border-radius: 20px; padding: .45rem 1rem;
+      font-size: .82rem; font-weight: 600; color: var(--white);
+    }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .9rem 1.8rem; border-radius: 12px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all .2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), #3B82F6);
+      color: #fff; box-shadow: 0 8px 28px rgba(30,79,216,.4);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(30,79,216,.5); }
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #fff; box-shadow: 0 8px 28px rgba(34,197,94,.3);
+    }
+    .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(34,197,94,.4); }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--sky); color: var(--sky); transform: translateY(-2px); }
+
+    /* ── STATS ── */
+    .stats-strip {
+      background: rgba(255,255,255,.03);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 5%;
+    }
+    .stats-inner {
+      display: flex; justify-content: center; flex-wrap: wrap;
+      gap: 2rem; max-width: 800px; margin: 0 auto;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1;
+    }
+    .stat-label { font-size: .8rem; color: var(--muted); font-weight: 500; margin-top: .3rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 5%; }
+    .section-eyebrow {
+      font-size: .72rem; font-weight: 700; letter-spacing: .16em;
+      text-transform: uppercase; color: var(--sky);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing: -.5px;
+      margin-bottom: .8rem; line-height: 1.15;
+    }
+    .section-desc { color: var(--muted); max-width: 520px; line-height: 1.8; font-size: .97rem; margin-bottom: 3rem; }
+
+    /* ── SERVICES ── */
+    .services { background: var(--navy2); }
+    .services-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem;
+      transition: all .25s; position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--sky));
+      transform: scaleX(0); transform-origin: left; transition: transform .3s;
+    }
+    .service-card:hover { transform: translateY(-5px); border-color: rgba(56,189,248,.3); box-shadow: 0 20px 48px rgba(0,0,0,.3); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .svc-icon {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: linear-gradient(135deg, rgba(30,79,216,.25), rgba(56,189,248,.15));
+      border: 1px solid rgba(56,189,248,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 1.2rem;
+    }
+    .svc-title { font-size: 1.05rem; font-weight: 800; margin-bottom: .5rem; }
+    .svc-desc { font-size: .86rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; }
+    .svc-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .svc-tag {
+      font-size: .7rem; font-weight: 600;
+      color: var(--sky); background: rgba(56,189,248,.08);
+      border: 1px solid rgba(56,189,248,.2);
+      padding: .2rem .55rem; border-radius: 5px;
+    }
+
+    /* ── WHY US ── */
+    .why-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .why-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem; text-align: center;
+      transition: all .2s;
+    }
+    .why-card:hover { border-color: rgba(245,158,11,.3); transform: translateY(-3px); }
+    .why-icon { font-size: 2rem; margin-bottom: .8rem; }
+    .why-title { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; }
+    .why-desc { font-size: .83rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── BRANDS ── */
+    .brands { background: var(--navy2); }
+    .brands-grid {
+      display: flex; flex-wrap: wrap; gap: .75rem; justify-content: center;
+    }
+    .brand-tag {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: .65rem 1.3rem;
+      font-size: .88rem; font-weight: 700; color: var(--white);
+      transition: all .2s;
+    }
+    .brand-tag:hover { border-color: var(--sky); color: var(--sky); transform: translateY(-2px); }
+
+    /* ── PROCESS ── */
+    .process-steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem; counter-reset: step;
+    }
+    .step-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.75rem 1.5rem;
+      position: relative; counter-increment: step;
+      transition: all .2s;
+    }
+    .step-card:hover { border-color: rgba(30,79,216,.4); transform: translateY(-3px); }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--blue), var(--sky));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: .75rem;
+    }
+    .step-title { font-size: .95rem; font-weight: 700; margin-bottom: .4rem; }
+    .step-desc { font-size: .83rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── CONTACT ── */
+    .contact { background: var(--navy2); }
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: start; max-width: 900px; margin: 0 auto;
+    }
+    .contact-info-list { display: flex; flex-direction: column; gap: 1.2rem; }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.2rem;
+      transition: border-color .2s;
+    }
+    .contact-item:hover { border-color: rgba(56,189,248,.3); }
+    .contact-icon {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, rgba(30,79,216,.3), rgba(56,189,248,.2));
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+    }
+    .contact-label { font-size: .7rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: .2rem; }
+    .contact-value { font-size: .95rem; font-weight: 700; color: var(--white); }
+    .contact-value a { color: var(--sky); text-decoration: none; }
+    .contact-value a:hover { text-decoration: underline; }
+
+    .contact-cta-box {
+      background: linear-gradient(135deg, rgba(30,79,216,.2), rgba(56,189,248,.1));
+      border: 1px solid rgba(56,189,248,.2);
+      border-radius: 20px; padding: 2.5rem 2rem; text-align: center;
+    }
+    .contact-cta-box h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 800; margin-bottom: .5rem;
+    }
+    .contact-cta-box p { color: var(--muted); font-size: .88rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .cta-btns { display: flex; flex-direction: column; gap: .75rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 2rem 5%;
+      border-top: 1px solid var(--border);
+      font-size: .8rem; color: var(--muted);
+    }
+    footer span { color: var(--sky); font-weight: 600; }
+
+    /* ── FLOATING WHATSAPP ── */
+    .float-wa {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 99;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; text-decoration: none;
+      box-shadow: 0 8px 24px rgba(37,211,102,.4);
+      animation: floatBounce 2s ease-in-out infinite;
+    }
+    @keyframes floatBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    @media (max-width: 720px) {
+      .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-btns { flex-direction: column; align-items: center; }
+    }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+  </style>
+</head>
+<body>
+
+<!-- FLOATING WHATSAPP -->
+<a class="float-wa" href="https://wa.me/916381061574" target="_blank" title="WhatsApp Us">💬</a>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#home">
+    <div class="logo-icon">🔧</div>
+    <div class="logo-text">
+      <div class="logo-name">Arul SmartCare</div>
+      <div class="logo-sub">Home Appliance Service</div>
+    </div>
+  </a>
+
+  <div class="nav-right">
+    <a class="nav-cta" href="tel:+916381061574">📞 Call Now</a>
+
+    <!-- Hamburger -->
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="nav-dropdown" id="nav-dropdown">
+      <a class="drop-item" href="#home" onclick="closeMenu()">
+        <div class="drop-icon">🏠</div> Home
+      </a>
+      <a class="drop-item" href="#services" onclick="closeMenu()">
+        <div class="drop-icon">🔧</div> Services
+      </a>
+      <a class="drop-item" href="#why" onclick="closeMenu()">
+        <div class="drop-icon">✅</div> Why Choose Us
+      </a>
+      <a class="drop-item" href="#brands" onclick="closeMenu()">
+        <div class="drop-icon">🏷️</div> Brands
+      </a>
+      <a class="drop-item" href="#process" onclick="closeMenu()">
+        <div class="drop-icon">📋</div> How It Works
+      </a>
+      <a class="drop-item" href="#contact" onclick="closeMenu()">
+        <div class="drop-icon">📍</div> Contact
+      </a>
+      <div class="drop-divider"></div>
+      <a class="drop-call" href="https://wa.me/916381061574" target="_blank" onclick="closeMenu()">
+        💬 WhatsApp: 6381061574
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-badge">
+    <div class="badge-dot"></div>
+    Available for Service · Villupuram & Nearby Areas
+  </div>
+
+  <h1>
+    Expert Home<br/>
+    Appliance <span class="gold">Repair</span><br/>
+    You Can Trust
+  </h1>
+
+  <p class="hero-sub">
+    Professional repair & service for AC, Washing Machine, Refrigerator, Water Purifier and more — at your doorstep, fast and affordable.
+  </p>
+
+  <div class="hero-location">
+    📍 Villupuram & Surrounding Areas, Tamil Nadu
+  </div>
+
+  <div class="hero-services-row">
+    <div class="service-pill">❄️ Air Conditioner</div>
+    <div class="service-pill">🫧 Washing Machine</div>
+    <div class="service-pill">🧊 Refrigerator</div>
+    <div class="service-pill">💧 Water Purifier</div>
+  </div>
+
+  <div class="hero-btns">
+    <a class="btn btn-primary" href="tel:+916381061574">📞 Call 6381061574</a>
+    <a class="btn btn-whatsapp" href="https://wa.me/916381061574" target="_blank">💬 WhatsApp Us</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Happy Customers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">Years Experience</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">Same Day</div>
+      <div class="stat-label">Service Available</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">All Brands</div>
+      <div class="stat-label">Supported</div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-eyebrow">Our Services</div>
+  <h2 class="section-title">What We Fix &amp; Service</h2>
+  <p class="section-desc">Skilled technicians for all major home appliances — repair, installation, gas refill, cleaning, and annual maintenance contracts.</p>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="svc-icon">❄️</div>
+      <div class="svc-title">Air Conditioner</div>
+      <div class="svc-desc">AC repair, installation, gas charging, coil cleaning, PCB repair, and annual maintenance for all types of ACs.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Split AC</span>
+        <span class="svc-tag">Window AC</span>
+        <span class="svc-tag">Gas Refill</span>
+        <span class="svc-tag">PCB Repair</span>
+        <span class="svc-tag">Deep Clean</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="svc-icon">🫧</div>
+      <div class="svc-title">Washing Machine</div>
+      <div class="svc-desc">Full washing machine repair — drum issues, motor problems, water not draining, PCB faults, and deep cleaning service.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Front Load</span>
+        <span class="svc-tag">Top Load</span>
+        <span class="svc-tag">Motor Repair</span>
+        <span class="svc-tag">Drum Fix</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="svc-icon">🧊</div>
+      <div class="svc-title">Refrigerator</div>
+      <div class="svc-desc">Fridge not cooling? Compressor issues, gas leak, thermostat fault, ice maker problems — all repaired at your home.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Single Door</span>
+        <span class="svc-tag">Double Door</span>
+        <span class="svc-tag">Compressor</span>
+        <span class="svc-tag">Gas Refill</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="svc-icon">💧</div>
+      <div class="svc-title">Water Purifier</div>
+      <div class="svc-desc">RO filter replacement, UV lamp service, membrane cleaning, installation, and annual maintenance contracts.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">RO Filter</span>
+        <span class="svc-tag">UV Lamp</span>
+        <span class="svc-tag">Membrane</span>
+        <span class="svc-tag">Installation</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="svc-icon">📺</div>
+      <div class="svc-title">Other Appliances</div>
+      <div class="svc-desc">Microwave oven, geyser, water heater, chimney, and other home appliance repair and maintenance services.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Microwave</span>
+        <span class="svc-tag">Geyser</span>
+        <span class="svc-tag">Chimney</span>
+        <span class="svc-tag">Oven</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="svc-icon">📋</div>
+      <div class="svc-title">AMC — Annual Contract</div>
+      <div class="svc-desc">Annual Maintenance Contracts for homes and offices — scheduled service visits, priority support, and discounted repairs.</div>
+      <div class="svc-tags">
+        <span class="svc-tag">Home AMC</span>
+        <span class="svc-tag">Office AMC</span>
+        <span class="svc-tag">Priority Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="section-eyebrow">Why Choose Us</div>
+  <h2 class="section-title">Trusted by Families<br/>Across Villupuram</h2>
+  <p class="section-desc">We believe in honest pricing, skilled work, and making your appliances last longer.</p>
+
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">⚡</div>
+      <div class="why-title">Same-Day Service</div>
+      <div class="why-desc">Call us in the morning — we aim to fix your appliance the same day, no long waits.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🏠</div>
+      <div class="why-title">Doorstep Repair</div>
+      <div class="why-desc">No need to carry your appliance anywhere. Our technician comes to your home.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">💰</div>
+      <div class="why-title">Honest Pricing</div>
+      <div class="why-desc">Transparent quotes before we start — no hidden charges, no surprises at the end.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🔩</div>
+      <div class="why-title">Genuine Parts</div>
+      <div class="why-desc">We use original or quality-approved spare parts so your appliance runs reliably longer.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">✅</div>
+      <div class="why-title">Service Warranty</div>
+      <div class="why-desc">Every repair comes with a service warranty — if it breaks again, we fix it at no extra cost.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📞</div>
+      <div class="why-title">24/7 Support</div>
+      <div class="why-desc">Call or WhatsApp us anytime — we're always available to answer your service queries.</div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<section class="brands" id="brands">
+  <div class="section-eyebrow">Brands We Service</div>
+  <h2 class="section-title">All Major Brands Covered</h2>
+  <p class="section-desc">From budget to premium — our technicians are trained to service all popular brands.</p>
+  <div class="brands-grid">
+    <span class="brand-tag">Samsung</span>
+    <span class="brand-tag">LG</span>
+    <span class="brand-tag">Whirlpool</span>
+    <span class="brand-tag">Voltas</span>
+    <span class="brand-tag">Daikin</span>
+    <span class="brand-tag">Haier</span>
+    <span class="brand-tag">Godrej</span>
+    <span class="brand-tag">Bosch</span>
+    <span class="brand-tag">IFB</span>
+    <span class="brand-tag">Blue Star</span>
+    <span class="brand-tag">Hitachi</span>
+    <span class="brand-tag">Panasonic</span>
+    <span class="brand-tag">Kent</span>
+    <span class="brand-tag">Aquaguard</span>
+    <span class="brand-tag">Pureit</span>
+    <span class="brand-tag">Carrier</span>
+    <span class="brand-tag">O'General</span>
+    <span class="brand-tag">Videocon</span>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-eyebrow">How It Works</div>
+  <h2 class="section-title">Book a Service in<br/>3 Simple Steps</h2>
+  <p class="section-desc">Fast, hassle-free booking — your appliance gets fixed without any complications.</p>
+
+  <div class="process-steps">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">Call or WhatsApp</div>
+      <div class="step-desc">Contact us on 6381061574 — tell us your appliance and the problem you're facing.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">Technician Visit</div>
+      <div class="step-desc">Our skilled technician arrives at your home at your preferred time, same or next day.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">Diagnosis &amp; Quote</div>
+      <div class="step-desc">We diagnose the issue and give you a transparent price quote — you decide before we start.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-title">Repair &amp; Done!</div>
+      <div class="step-desc">We fix it on the spot, test it fully, and you pay only after you're satisfied.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-eyebrow">Contact Us</div>
+  <h2 class="section-title">Get In Touch</h2>
+  <p class="section-desc">Ready to fix your appliance? Reach out — we're just a call or WhatsApp away.</p>
+
+  <div class="contact-inner">
+    <div class="contact-info-list">
+      <div class="contact-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">Phone &amp; WhatsApp</div>
+          <div class="contact-value"><a href="tel:+916381061574">6381061574</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:arulkrishnan7654@gmail.com">arulkrishnan7654@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">Service Area</div>
+          <div class="contact-value">Villupuram &amp; Nearby Areas, Tamil Nadu</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-label">Working Hours</div>
+          <div class="contact-value">Mon – Sat: 8:00 AM – 8:00 PM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-cta-box">
+      <h3>Book a Service Now</h3>
+      <p>Call us or send a WhatsApp message — our team will confirm your booking within minutes.</p>
+      <div class="cta-btns">
+        <a class="btn btn-primary" href="tel:+916381061574">📞 Call 6381061574</a>
+        <a class="btn btn-whatsapp" href="https://wa.me/916381061574?text=Hi%20Arul%20SmartCare%2C%20I%20need%20a%20service%20booking." target="_blank">💬 WhatsApp Booking</a>
+        <a class="btn btn-outline" href="mailto:arulkrishnan7654@gmail.com">✉️ Send Email</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  © 2025 <span>Arul SmartCare Service</span> · Villupuram, Tamil Nadu ·
+  <a href="tel:+916381061574" style="color:var(--sky);text-decoration:none;">6381061574</a>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('nav-dropdown').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('nav-dropdown').classList.remove('open');
+  }
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    const ham = document.getElementById('hamburger');
+    const drop = document.getElementById('nav-dropdown');
+    if (!ham.contains(e.target) && !drop.contains(e.target)) {
+      closeMenu();
+    }
+  });
+</script>
+</body>
+</html>
